@@ -45,10 +45,10 @@ const board = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 2],
+  [2, 2, 2, 2, 1, 1, 0, 0, 0, 0, 3, 3, 3, 2],
 ];
 
 //4. pieza player
@@ -67,21 +67,29 @@ const PIECES = [
     [1, 1],
     [1, 1],
   ],
-  [[1, 1, 1, 1]],
+  [[2, 2, 2, 2]],
   [
-    [0, 1, 0],
-    [1, 1, 1],
+    [0, 3, 0],
+    [3, 3, 3],
   ],
   [
-    [1, 1, 0],
-    [0, 1, 1],
+    [4, 4, 0],
+    [0, 4, 4],
   ],
   [
-    [1, 0],
-    [1, 0],
-    [1, 1],
+    [5, 0],
+    [5, 0],
+    [5, 5],
   ],
 ];
+const PIECECOLORS = {
+  0: "black",
+  1: "#e74c3c",
+  2: "#9b59b6",
+  3: "#2ecc71",
+  4: " #f1c40f",
+  5: "#3498db"
+};
 
 //2. game loop
 let dropCounter = 0;
@@ -111,21 +119,55 @@ function draw() {
   //fondo del canvas
   context.fillStyle = "#000";
   context.fillRect(0, 0, canvas.width, canvas.height);
-  //pintamos cada cuadro del canvas con valores de 1 en amarillo
+
+  //borde de piezas
+  context.strokeStyle="#ccc";
+  context.lineWidth=0.1;
+  //pintamos el canvas inicial
   board.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value == 1) {
-        context.fillStyle = "yellow";
-        context.fillRect(x, y, 1, 1);
+      switch (value) {
+        case 1: {
+          context.fillStyle = PIECECOLORS[value];
+          context.fillRect(x, y, 1, 1);
+          context.strokeRect(x,y, 1, 1);
+          break;
+        }
+        case 2: {
+          context.fillStyle = PIECECOLORS[value];
+          context.fillRect(x, y, 1, 1);
+          context.strokeRect(x,y, 1, 1);
+          break;
+        }
+        case 3: {
+          context.fillStyle = PIECECOLORS[value];
+          context.fillRect(x, y, 1, 1);
+          context.strokeRect(x,y, 1, 1);
+          break;
+        }
+        case 4: {
+          context.fillStyle = PIECECOLORS[value];
+          context.fillRect(x, y, 1, 1);
+          context.strokeRect(x,y, 1, 1);
+          break;
+        }
+        case 5: {
+          context.fillStyle = PIECECOLORS[value];
+          context.fillRect(x, y, 1, 1);
+          context.strokeRect(x,y, 1, 1);
+          break;
+        }
       }
     });
   });
-  //si existen valores de piezas para el player le damos el color rojo
+  //pintamos la pieza del player
+  
   piece.shape.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value) {
-        context.fillStyle = "red";
+        context.fillStyle = PIECECOLORS[value];
         context.fillRect(piece.position.x + x, piece.position.y + y, 1, 1);
+        context.strokeRect(piece.position.x + x, piece.position.y + y, 1, 1);
       }
     });
   });
@@ -190,8 +232,28 @@ function checkCollision() {
 function solidifyPiece() {
   piece.shape.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value == 1) {
-        board[y + piece.position.y][x + piece.position.x] = 1;
+     
+      switch (value) {
+        case 1: {
+          board[y + piece.position.y][x + piece.position.x] = 1;
+          break;
+        }
+        case 2: {
+          board[y + piece.position.y][x + piece.position.x] = 2;
+          break;
+        }
+        case 3: {
+          board[y + piece.position.y][x + piece.position.x] = 3;
+          break;
+        }
+        case 4: {
+          board[y + piece.position.y][x + piece.position.x] = 4;
+          break;
+        }
+        case 5: {
+          board[y + piece.position.y][x + piece.position.x] = 5;
+          break;
+        }
       }
     });
   });
@@ -212,7 +274,7 @@ function removeRows() {
   const rowsToRemove = [];
 
   board.forEach((row, y) => {
-    if (row.every((value) => value == 1)) {
+    if (row.every((value) => value !=0)) {
       rowsToRemove.push(y);
     }
   });
